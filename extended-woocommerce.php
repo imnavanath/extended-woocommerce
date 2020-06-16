@@ -28,7 +28,15 @@ if ( ! function_exists( 'extended_woocommerce_setup' ) ) :
 	 */
 	function extended_woocommerce_setup() {
 
+		/**
+		 * Extend Order CPT edit page.
+		 */
 		require_once EXTENDED_WOOCOMMERCE_DIR . 'classes/class-extend-admin-order-view.php';
+
+		/**
+		 * Register meta-box for upoading PDF certificate.
+		 */
+		require_once EXTENDED_WOOCOMMERCE_DIR . 'classes/class-woo-order-metabox.php';
 	}
 
 	add_action( 'plugins_loaded', 'extended_woocommerce_setup' );

@@ -1,3 +1,6 @@
+/**
+ * Adjust column widths.
+ */
 .post-type-shop_order .wp-list-table .column-order_number {
     width: 12ch;
 }
@@ -7,4 +10,11 @@
 }
 .post-type-shop_order .wp-list-table .column-social_details {
     width: 15ch;
+}
+
+/**
+ * Highlight "Done" order status badge.
+ */
+.order-status.certificate-delivered {
+    margin-left: 10px;
 }

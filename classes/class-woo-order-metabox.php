@@ -109,7 +109,7 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
 
                         <label for="notify_customer_with_certificate" style="margin-left: 10px;">
                             <input type="checkbox" name="notify_customer_with_certificate" id="notify_customer_with_certificate" value="yes" <?php echo esc_attr( $is_notified_checked ); ?> />
-                            <?php _e( 'Notify?', 'prfx-textdomain' )?>
+                            <?php _e( 'Notify user?', 'prfx-textdomain' )?>
                         </label>
 
                     </div>
@@ -158,7 +158,7 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
                 WC()->mailer()->emails['WC_Email_Order_Certificate']->trigger( $order->get_id(), $order );
 
                 // Record certifiacte delivering status.
-                $order_note = __( 'Certificate delivered successfully.' );
+                $order_note = __( 'Certificate sent successfully.' );
                 $order      = wc_get_order( $post_id );
                 $comment_id = $order->add_order_note( $order_note, 0, true );
 

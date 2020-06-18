@@ -174,6 +174,16 @@ class Extend_Admin_Order_View {
                 echo $output;
             break;
 
+            // order_status custom column.
+            case 'order_status':
+                $is_notified_customer = get_post_meta( $post_id, 'notify_customer_with_certificate', true );
+
+                if( isset( $is_notified_customer ) && 'yes' === $is_notified_customer ) {
+                    printf( '<mark class="order-status certificate-delivered"><span>%s</span></mark>', esc_html( 'Done' ) );
+                }
+
+            break;
+
             // assign_pay_status custom column.
             case 'assign_pay_status':
                 $output = '';

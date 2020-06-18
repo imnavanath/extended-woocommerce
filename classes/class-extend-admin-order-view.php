@@ -155,9 +155,9 @@ class Extend_Admin_Order_View {
                 $order_rating = get_post_meta( $post_id, 'order_feedback', true );
 
                 if( 'positive' === $order_rating ) {
-                    $output .= __( 'Positively Rated' );
+                    $output .= __( 'Good' );
                 } elseif( 'negative' === $order_rating ) {
-                    $output .= __( 'Negatively Rated' );
+                    $output .= __( 'Bad' );
                 } elseif( 'asked' === $order_rating ) {
                     $output .= __( 'Asked for Rating' );
                 } else {

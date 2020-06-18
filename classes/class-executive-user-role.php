@@ -43,6 +43,17 @@ class Executive_User_Role {
 
 		// Remove 'woocommerce-order-downloads' meta-box from shop_order.
 		add_action( 'add_meta_boxes', array( $this, 'remove_order_downloads_metabox' ) );
+
+		add_action('admin_head', array( $this, 'disable_new_posts_link' ) );
+	}
+
+	/**
+	 * Remove 'Add New' Submenu for 'shop_order'.
+	 */
+	public function disable_new_posts_link() {
+		if( 'shop_order' === get_post_type() ) {
+			echo '<style type="text/css"> .wp-menu-open.menu-icon-shop_order .wp-submenu li:last-child, .post-type-shop_order .page-title-action {display:none;} </style>';
+		}
 	}
 
 	/**

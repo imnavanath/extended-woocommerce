@@ -29,6 +29,11 @@ if ( ! function_exists( 'extended_woocommerce_setup' ) ) :
 	function extended_woocommerce_setup() {
 
 		/**
+		 * Executive User role.
+		 */
+		require_once EXTENDED_WOOCOMMERCE_DIR . 'classes/class-executive-user-role.php';
+
+		/**
 		 * Extend Order CPT edit page.
 		 */
 		require_once EXTENDED_WOOCOMMERCE_DIR . 'classes/class-extend-admin-order-view.php';

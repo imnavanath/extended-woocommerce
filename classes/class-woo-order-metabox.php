@@ -148,7 +148,10 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
                 // Record order note.
                 $order_note = __( 'Certificate uploaded successfully.' );
                 $order      = wc_get_order( $post_id );
-                $comment_id = $order->add_order_note( $order_note, 0, true );
+
+                if( is_callable( $order, 'add_order_note' ) ) {
+                    $comment_id = $order->add_order_note( $order_note, 0, true );
+                }
             }
 
             // Handle button actions.

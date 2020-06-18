@@ -42,7 +42,7 @@ class Executive_User_Role {
 		add_action( 'add_meta_boxes', array( $this, 'change_author_metabox' ) );
 
 		// Remove 'woocommerce-order-downloads' meta-box from shop_order.
-		add_action( 'do_meta_boxes', array( $this, 'remove_order_downloads_metabox' ) );
+		add_action( 'add_meta_boxes', array( $this, 'remove_order_downloads_metabox' ) );
 	}
 
 	/**

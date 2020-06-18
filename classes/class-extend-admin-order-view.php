@@ -114,7 +114,7 @@ class Extend_Admin_Order_View {
             'social_details'    =>      __( 'Mobile / Email ID' ),
             'order_status'      =>      __( 'Payment / Order Status' ),
             'ratings_status'    =>      __( 'Ratings / Follow Up Date' ),
-            'assign_pay_status' =>      __( 'Assign / Payment Success on' ),
+            'assign_pay_status' =>      __( 'Assignee' ),
             'wc_actions'        =>      __('Actions'),
         ) );
     }
@@ -180,6 +180,8 @@ class Extend_Admin_Order_View {
 
                 if( isset( $is_notified_customer ) && 'yes' === $is_notified_customer ) {
                     printf( '<mark class="order-status certificate-delivered"><span>%s</span></mark>', esc_html( 'Done' ) );
+                } else {
+                    printf( '<mark class="order-status under-process"><span>%s</span></mark>', esc_html( 'In Progress' ) );
                 }
 
             break;
@@ -187,10 +189,11 @@ class Extend_Admin_Order_View {
             // assign_pay_status custom column.
             case 'assign_pay_status':
                 $output = '';
-                $paid_date  = get_post_meta( $post_id, '_paid_date', true );
+                $author_id = get_the_author_meta( $post_id );
+                $assignee_name = get_the_author_meta( 'display_name', $author_id );
 
-                if( $paid_date ) {
-                    $output .= $paid_date;
+                if( isset( $assignee_name ) && '' !== $assignee_name ) {
+                    $output .= '<span class="order-assignee-name">' . $assignee_name . '</span>';
                 }
 
                 echo $output;

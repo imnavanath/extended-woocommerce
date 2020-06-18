@@ -13,8 +13,32 @@
 }
 
 /**
- * Highlight "Done" order status badge.
+ * Highlight order status badgees.
  */
-.order-status.certificate-delivered {
+ .order-status.certificate-delivered,
+ .order-status.under-process {
     margin-left: 10px;
+ }
+.order-status.certificate-delivered,
+.order_status .order-status.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+.order_status .order-status.status-processing,
+.order-status.under-process {
+    background: #cce5ff;
+    color: #004085;
+}
+.order-status.status-refunded {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/**
+ * Highlight Assignee name.
+ */
+.assign_pay_status .order-assignee-name {
+    font-weight: 600;
+    color: blue;
+    text-transform: capitalize;
 }

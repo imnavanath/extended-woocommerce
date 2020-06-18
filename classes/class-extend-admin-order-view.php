@@ -196,7 +196,8 @@ class Extend_Admin_Order_View {
      */
     public function load_new_email_templates( $emails ) {
 
-		$emails['WC_Email_Order_Ratings'] = include EXTENDED_WOOCOMMERCE_DIR . 'emails/class-wc-email-order-ratings.php';
+        $emails['WC_Email_Order_Ratings'] = include EXTENDED_WOOCOMMERCE_DIR . 'emails/class-wc-email-order-ratings.php';
+        $emails['WC_Email_Order_Certificate'] = include EXTENDED_WOOCOMMERCE_DIR . 'emails/class-wc-email-order-certificate.php';
 
         return $emails;
     }
@@ -282,6 +283,51 @@ class Extend_Admin_Order_View {
                                     $output .= '<ol> <li> <b> {order_number} </b> - Customer\'s unique order number </li>';
                                     $output .= '<li> <b> {site_title} </b> - This site title (your site name) </li>';
                                     $output .= '<li> <b> {rating_url} </b> - Rating URL link (apply it to any text/button from the editor) </li>';
+                                    $output .= '<li> <b> {site_url} </b> - This site URL </li> </ol>';
+
+                                    echo $output;
+                                ?>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            <?php
+        }
+
+        if( 'order_certificate' === $email->id ) {
+
+            ?>
+                <table class="form-table">
+                    <tbody>
+                        <tr>
+                            <th>
+                                <label for="woocommerce_order_certificate_body"><b><?php esc_html_e( 'Email Body:' ); ?></b></label>
+                            </th>
+                            <td>
+                                <?php
+                                    $initial_data = 'Thank you for shopping with us!
+
+                                    Here is your certificate for your order #{order_number}. Click the button below and get your certificate!
+
+                                    <a href="{certificate_url}" target="_blank" download> Download Certificate </a>';
+
+                                    wp_editor(
+                                        $initial_data,
+                                        'woocommerce_order_certificate_body',
+                                        array(
+                                            'media_buttons' => true,
+                                            'textarea_rows' => 15,
+                                            'tabindex' => 4,
+                                            'tinymce'  => array(
+                                                'theme_advanced_buttons1' => 'bold,italic,underline,|,bullist,numlist,blockquote,|,link,unlink,|,spellchecker,fullscreen,|,formatselect,styleselect',
+                                            ),
+                                        )
+                                    );
+
+                                    $output = '<br /> <p> <b> Following variables can be used for dynamic content - Paste it in anywhere in the content (including {} backets). </b>';
+                                    $output .= '<ol> <li> <b> {order_number} </b> - Customer\'s unique order number </li>';
+                                    $output .= '<li> <b> {site_title} </b> - This site title (your site name) </li>';
+                                    $output .= '<li> <b> {certificate_url} </b> - Certificate downlodable URL link (apply it to any text/button from the editor) </li>';
                                     $output .= '<li> <b> {site_url} </b> - This site URL </li> </ol>';
 
                                     echo $output;

@@ -33,7 +33,7 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
 		public function __construct() {
 
 			add_action( 'load-post.php', array( $this, 'init_metabox' ) );
-			add_action( 'load-post-new.php', array( $this, 'init_metabox' ) );
+            add_action( 'load-post-new.php', array( $this, 'init_metabox' ) );
 		}
 
 		/**
@@ -59,7 +59,6 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
 
                 // Registers and enqueues the required javascript.
                 wp_enqueue_script( 'certificate_uploader_script', EXTENDED_WOOCOMMERCE_URI . 'assets/js/certificate-media.js', array( 'jquery' ), EXTENDED_WOOCOMMERCE_VER );
-
             }
         }
 
@@ -95,13 +94,24 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
                 <fieldset>
                     <div>
                         <p class="description"> <?php _e( 'Upload customer\'s PDF certificate here.' ); ?> </p>
+                        <p class="description"> <?php _e( 'Then to Notify Customer enable the checkbox & click on the Update.' ); ?> </p> <br />
 
                         <input type="url" readonly class="large-text" name="certificate_file_name" id="certificate_file_name" value="<?php echo esc_attr( $output_notice ); ?>"><br><br>
                         <input type="hidden" name="certificate_file_url" id="certificate_file_url" value="<?php echo esc_attr( $certificate_file_url ); ?>">
+                        <input type="hidden" name="order_id" id="order_id" value="<?php echo esc_attr( $post->ID ); ?>">
 
-                        <button type="button" class="button" id="certificate_upload_btn" data-certificate_name="#certificate_file_name" data-certificate_url="#certificate_file_url"><?php _e( 'Upload Certificate' )?></button>
+                        <button type="button" class="button" id="certificate_upload_btn" style="vertical-align: middle;" data-certificate_name="#certificate_file_name" data-certificate_url="#certificate_file_url"><?php _e( 'Upload Certificate' )?></button>
 
-                        <button type="button" class="button" id="certificate_notify_btn" style="margin-left: 5px;"><?php _e( 'Notify User' )?></button>
+                        <?php
+                            $is_notified = get_post_meta( $post->ID, 'notify_customer_with_certificate', true );
+                            $is_notified_checked = isset( $is_notified ) && 'yes' === $is_notified ? 'checked="checked"' : '';
+                        ?>
+
+                        <label for="notify_customer_with_certificate" style="margin-left: 10px;">
+                            <input type="checkbox" name="notify_customer_with_certificate" id="notify_customer_with_certificate" value="yes" <?php echo esc_attr( $is_notified_checked ); ?> />
+                            <?php _e( 'Notify?', 'prfx-textdomain' )?>
+                        </label>
+
                     </div>
                 </fieldset>
             <?php
@@ -125,14 +135,36 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
 				return;
             }
 
-            // Certificate file ID.
-            $certificate_file_name = sanitize_text_field( $_POST['certificate_file_name'] );
-            update_post_meta( $post_id, 'certificate_file_name', $certificate_file_name );
+            if( isset( $_POST['certificate_file_name'] ) && isset( $_POST['certificate_file_url'] ) ) {
 
-            // Certificate file URL.
-            $certificate_file_url = sanitize_text_field( $_POST['certificate_file_url'] );
-            update_post_meta( $post_id, 'certificate_file_url', $certificate_file_url );
-		}
+                // Certificate file ID.
+                $certificate_file_name = sanitize_text_field( $_POST['certificate_file_name'] );
+                update_post_meta( $post_id, 'certificate_file_name', $certificate_file_name );
+
+                // Certificate file URL.
+                $certificate_file_url = sanitize_text_field( $_POST['certificate_file_url'] );
+                update_post_meta( $post_id, 'certificate_file_url', $certificate_file_url );
+
+                // Record order note.
+                $order_note = __( 'Certificate uploaded successfully.' );
+                $order      = wc_get_order( $post_id );
+                $comment_id = $order->add_order_note( $order_note, 0, true );
+            }
+
+            // Handle button actions.
+            if ( isset( $_POST['notify_customer_with_certificate'] ) && 'yes' === $_POST['notify_customer_with_certificate'] ) {
+
+                // Send this order certificate to customer.
+                WC()->mailer()->emails['WC_Email_Order_Certificate']->trigger( $order->get_id(), $order );
+
+                // Record certifiacte delivering status.
+                $order_note = __( 'Certificate delivered successfully.' );
+                $order      = wc_get_order( $post_id );
+                $comment_id = $order->add_order_note( $order_note, 0, true );
+
+                update_post_meta( $post_id, 'notify_customer_with_certificate', 'yes' );
+            }
+        }
 	}
 }
 

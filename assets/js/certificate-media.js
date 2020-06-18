@@ -26,7 +26,7 @@ jQuery(document).ready(function($){
 
 		// Sets up the media library frame
 		metaImageFrame = wp.media.frames.metaImageFrame = wp.media({
-            title: 'Select File',
+            title: 'Select Certificate',
             button: { text:  'Attach this file' },
             library : { type: 'application/pdf' },
             multiple: false

@@ -189,11 +189,13 @@ class Extend_Admin_Order_View {
             // assign_pay_status custom column.
             case 'assign_pay_status':
                 $output = '';
-                $author_id = get_the_author_meta( $post_id );
+                $post = get_post( $post_id );
+                $author_id = $post->post_author;
                 $assignee_name = get_the_author_meta( 'display_name', $author_id );
+                $assignee_orders_view = admin_url() . '/edit.php?post_type=shop_order&author=' . $author_id;
 
                 if( isset( $assignee_name ) && '' !== $assignee_name ) {
-                    $output .= '<span class="order-assignee-name">' . $assignee_name . '</span>';
+                    $output .= '<a href="' . $assignee_orders_view . '" target="_blank"><span class="order-assignee-name">' . $assignee_name . '</span></a>';
                 }
 
                 echo $output;

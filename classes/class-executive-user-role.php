@@ -108,8 +108,13 @@ class Executive_User_Role {
 	 * Remove 'Add New' Submenu for 'shop_order'.
 	 */
 	public function disable_new_posts_link() {
-		if( 'shop_order' === get_post_type() ) {
-			echo '<style type="text/css"> .wp-menu-open.menu-icon-shop_order .wp-submenu li:last-child, .post-type-shop_order .page-title-action {display:none;} </style>';
+
+		$current_user_id = get_current_user_id();
+		$user = get_userdata( $current_user_id );
+		$user_roles = $user->roles;
+
+		if ( in_array( 'order_executive', $user_roles, true ) ) {
+			echo '<style type="text/css"> #adminmenu #menu-dashboard, #wp-admin-bar-new-content, #wpbody-content .wrap .subsubsub .all, .wp-menu-open.menu-icon-shop_order .wp-submenu, .menu-top.toplevel_page_woocommerce, .wp-menu-separator.woocommerce, .wp-menu-open.menu-icon-shop_order .wp-submenu, .post-type-shop_order .page-title-action {display:none;} .menu-icon-shop_order .wp-submenu {top: -1000em !important;} </style>';
 		}
 	}
 

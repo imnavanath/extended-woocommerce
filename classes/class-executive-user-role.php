@@ -114,7 +114,7 @@ class Executive_User_Role {
 		$user_roles = $user->roles;
 
 		if ( in_array( 'order_executive', $user_roles, true ) ) {
-			echo '<style type="text/css"> #adminmenu #menu-dashboard, #wp-admin-bar-new-content, #wpbody-content .wrap .subsubsub .all, .wp-menu-open.menu-icon-shop_order .wp-submenu, .menu-top.toplevel_page_woocommerce, .wp-menu-separator.woocommerce, .wp-menu-open.menu-icon-shop_order .wp-submenu, .post-type-shop_order .page-title-action {display:none;} .menu-icon-shop_order .wp-submenu {top: -1000em !important;} </style>';
+			echo '<style type="text/css"> #adminmenu #menu-dashboard, #wp-admin-bar-new-content, #wpbody-content .wrap .subsubsub .all, .wp-menu-open.menu-icon-shop_order .wp-submenu, .menu-top.toplevel_page_woocommerce, #menu-media, .wp-menu-separator.woocommerce, .wp-menu-open.menu-icon-shop_order .wp-submenu, .post-type-shop_order .page-title-action {display:none;} .menu-icon-shop_order .wp-submenu, .menu-icon-media .wp-submenu {top: -1000em !important;} </style>';
 		}
 	}
 
@@ -207,6 +207,7 @@ class Executive_User_Role {
 			'Shop Executive',
 			array(
 				'read'                          => true,
+				'upload_files'					=> true,
                 'assign_shop_order_terms'       => true,
 				'edit_private_shop_orders'      => true,
 				'edit_published_shop_orders'    => true,

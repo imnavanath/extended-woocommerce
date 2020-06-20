@@ -4,8 +4,10 @@
 .post-type-shop_order .wp-list-table .column-order_number {
     width: 12ch;
 }
-.post-type-shop_order .wp-list-table .column-order_date,
 .post-type-shop_order .wp-list-table .column-order_status {
+    width: 16ch !important;
+}
+.post-type-shop_order .wp-list-table .column-order_date {
     width: 8ch;
 }
 .post-type-shop_order .wp-list-table .column-social_details {

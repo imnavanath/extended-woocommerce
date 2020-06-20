@@ -26,6 +26,12 @@ class Executive_User_Role {
      */
     public function __construct() {
 
+		// Get Excutive ID to whom it should assign next.
+		add_action( 'wp_head', array( $this, 'get_next_assignee_executive' ) );
+
+		// Update custom executive user ID to new shop_order.
+		add_filter( 'woocommerce_new_order_data', array( $this, 'assign_shop_order_to_executive' ));
+
 		// Update WP's default Author metabox for 'order_executive' custom user role.
 		add_action( 'wp_dropdown_users_args', array( $this, 'update_author_for_post_order' ) );
 
@@ -45,6 +51,57 @@ class Executive_User_Role {
 		add_action( 'add_meta_boxes', array( $this, 'remove_order_downloads_metabox' ) );
 
 		add_action('admin_head', array( $this, 'disable_new_posts_link' ) );
+	}
+
+	/**
+	 * Assign new orders to Executive user role directly.
+	 */
+	public function assign_shop_order_to_executive( $order_meta_data ) {
+
+		$last_assignee_user = $this->get_next_assignee_executive();
+
+		$order_meta_data[ 'post_author' ] = $last_assignee_user;
+		update_option( 'woo_last_assignee_executive', $last_assignee_user );
+
+		return $order_meta_data;
+	}
+
+	/**
+	 * Assign next Assignee user role that order should be assign.
+	 */
+	public function get_next_assignee_executive() {
+
+		$all_executive_ids = array();
+		$next_assignee_executive = 1;
+		$last_assignee_position = 0;
+		$all_executive_users = get_users( [ 'role__in' => [ 'order_executive' ] ] );
+
+		$last_assignee_user = (int) get_option( 'woo_last_assignee_executive', 1 );
+
+		if( $all_executive_users ) {
+			foreach ( $all_executive_users as $executive ) {
+				$all_executive_ids[] = $executive->ID;
+				if( 1 === $last_assignee_user ) {
+					$last_assignee_user = update_option( 'woo_last_assignee_executive', $executive->ID );
+				}
+			}
+			$last_assignee_position = array_key_last( $all_executive_ids );
+		}
+
+		if( $all_executive_ids && in_array( $last_assignee_user, $all_executive_ids ) ) {
+
+			$current_assignee_position = array_search( $last_assignee_user, $all_executive_ids );
+
+			if( $current_assignee_position === $last_assignee_position ) {
+				$assignee_at_position = 0;
+			} else {
+				$assignee_at_position = $current_assignee_position + 1;
+			}
+
+			$next_assignee_executive = $all_executive_ids[ $assignee_at_position ];
+		}
+
+		return $next_assignee_executive;
 	}
 
 	/**

@@ -76,7 +76,7 @@ class Extend_Admin_Order_View {
         $screen    = get_current_screen();
         $screen_id = $screen ? $screen->id : '';
         
-        if( 'edit-shop_order' === $screen_id ) {
+        if( 'edit-shop_order' === $screen_id || 'shop_order' === $screen_id ) {
             wp_enqueue_style( 'extended_woocommerce_order_cpt_page' );
         }
     }

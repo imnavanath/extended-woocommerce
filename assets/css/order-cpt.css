@@ -44,3 +44,10 @@
     color: blue;
     text-transform: capitalize;
 }
+
+/**
+ * CSS to override checkout manager plugin's z-index: 99999;.
+ */
+.order_data_column_container .order_data_column .select2-container {
+    z-index: 999;
+}

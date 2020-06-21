@@ -29,6 +29,11 @@ if ( ! function_exists( 'extended_woocommerce_setup' ) ) :
 	function extended_woocommerce_setup() {
 
 		/**
+		 * Default Checkout Configurations.
+		 */
+		require_once EXTENDED_WOOCOMMERCE_DIR . 'classes/class-checkout-config.php';
+
+		/**
 		 * Executive User role.
 		 */
 		require_once EXTENDED_WOOCOMMERCE_DIR . 'classes/class-executive-user-role.php';

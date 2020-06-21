@@ -35,7 +35,42 @@ class Extended_Checkout_Config {
 
         // Preconfigured cart data.
 		add_action( 'wp', array( $this, 'preconfigured_extended_cart_data' ), 1 );
-    }
+
+		// Load custom stylings for checkout page.
+		add_action( 'wp_enqueue_scripts', array( $this, 'load_checkout_page_custom_stylings' ) );
+		
+		// Remove checkout page unwanted actions.
+		remove_action( 'woocommerce_checkout_order_review', 'woocommerce_order_review', 10 );
+		remove_action( 'woocommerce_checkout_terms_and_conditions', 'wc_checkout_privacy_policy_text', 20 );
+
+		// Change "Place order" button text to "Validate & Pay".
+		add_filter( 'woocommerce_order_button_text', array( $this, 'update_checkout_place_order_text' ) );
+	}
+
+	/**
+	* Load custom styles for checkout page.
+	*
+	* @since 1.0.0
+	* @return bool
+	*/
+    public function load_checkout_page_custom_stylings() {
+
+		if ( $this->is_woo_checkout_shortcode_on_page() ) {
+
+			wp_enqueue_style( 'woo-frontend-checkout-style', EXTENDED_WOOCOMMERCE_URI . 'assets/css/checkout-styles.css', array(), EXTENDED_WOOCOMMERCE_VER );
+		}
+	}
+
+	/**
+	* Updated order button CTA text.
+	*
+	* @since 1.0.0
+	* @return bool
+	*/
+    public function update_checkout_place_order_text( $cta_text ) {
+		$cta_text = __( 'Validate & Pay' );
+		return $cta_text;
+	}
 
     /**
 	* Check if it is checkout shortcode.
@@ -86,7 +121,7 @@ class Extended_Checkout_Config {
 		if ( ! isset( $this->checkout_products[ $checkout_id ] ) ) {
 
             $products = array(
-                'product'        => '146',
+                'product'        => '847',
                 'quantity'       => '1',
                 'discount_type'  => '',
                 'discount_value' => '',

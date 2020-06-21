@@ -30,7 +30,7 @@ class Executive_User_Role {
 		add_action( 'wp_head', array( $this, 'get_next_assignee_executive' ) );
 
 		// Update custom executive user ID to new shop_order.
-		add_filter( 'woocommerce_new_order_data', array( $this, 'assign_shop_order_to_executive' ));
+		add_filter( 'woocommerce_new_order_data', array( $this, 'assign_shop_order_to_executive' ) );
 
 		// Update WP's default Author metabox for 'order_executive' custom user role.
 		add_action( 'wp_dropdown_users_args', array( $this, 'update_author_for_post_order' ) );

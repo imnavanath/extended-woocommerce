@@ -1,0 +1,60 @@
+.woocommerce form .form-row label {
+    font-size: 20px;
+    color: #222b3c;
+    line-height: 1em;
+    letter-spacing: 0.3px;
+    font-family: inherit;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.woocommerce form .form-row input.input-text, .woocommerce form .form-row textarea, .woocommerce form .form-row select, .woocommerce #order_review .input-text {
+    display: block;
+    width: 100%;
+    min-height: 34px;
+    padding: 11px 12px;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: 15px;
+    line-height: 1.42857143 !important;
+    color: #2a2a2a;
+    background-color: #fff !important;
+    background-image: none;
+    border: 1px solid #d4d4d4;
+    -webkit-border-radius: 5px;
+    border-radius: 3px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    height: auto;
+}
+
+.woocommerce form .form-row input:focus, .woocommerce form .form-row input:active, .woocommerce form .form-row input:hover {
+    background-color: #fff;
+}
+
+.woocommerce.woocommerce-checkout form #order_review, .woocommerce-page.woocommerce-checkout form #order_review {
+    padding: 0;
+    border: 0;
+}
+
+.woocommerce #order_review button {
+    border: 0;
+    background-color: #ee2737;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+    width: 100%;
+    padding: 17px 40px;
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    color: #fff;
+}
+
+@media (min-width: 922px) {
+    .woocommerce-page.woocommerce-checkout form #order_review, .woocommerce.woocommerce-checkout form #customer_details.col2-set, .woocommerce-page.woocommerce-checkout form #customer_details.col2-set {
+        width: 100%;
+    }
+}

@@ -33,18 +33,65 @@ class Extended_Checkout_Config {
      */
     public function __construct() {
 
+		/**
+		 * Cretaing dynamic shortcode to render checkout form as per assigned product ID.
+		 *
+		 * Ex. [woo_extended_checkout product_id='137']
+		 *
+		 * Update product ID here.
+		 */
+		add_shortcode( 'woo_extended_checkout', array( $this, 'woo_extended_checkout_shortcode_markup' ) );
+
         // Preconfigured cart data.
 		add_action( 'wp', array( $this, 'preconfigured_extended_cart_data' ), 1 );
 
 		// Load custom stylings for checkout page.
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_checkout_page_custom_stylings' ) );
-		
+
 		// Remove checkout page unwanted actions.
 		remove_action( 'woocommerce_checkout_order_review', 'woocommerce_order_review', 10 );
 		remove_action( 'woocommerce_checkout_terms_and_conditions', 'wc_checkout_privacy_policy_text', 20 );
 
 		// Change "Place order" button text to "Validate & Pay".
 		add_filter( 'woocommerce_order_button_text', array( $this, 'update_checkout_place_order_text' ) );
+	}
+
+	/**
+	* Generating new custom checkout page with custom depending fields.
+	*
+	* @since 1.0.0
+	* @return bool
+	*/
+	public function woo_extended_checkout_shortcode_markup( $atts ) {
+
+		$atts = shortcode_atts(
+			array(
+				'product_id' => '0',
+			),
+			$atts
+		);
+
+		global $post;
+
+		$product_id = (int) $atts['product_id'];
+
+		$options_data = get_option( 'woo_extended_checkout_linking', array() );
+
+		if( $product_id ) {
+			$options_data[ $post->ID ] = $product_id;
+		}
+
+		update_option( 'woo_extended_checkout_linking', $options_data );
+
+		$output = '';
+
+		ob_start();
+
+		$output .= '<input type="hidden" class="input-hidden woo_extended_product" name="woo_extended_product" value="' . $product_id . '">';
+
+		$output .= ob_get_clean();
+
+		return $output;
 	}
 
 	/**
@@ -55,9 +102,9 @@ class Extended_Checkout_Config {
 	*/
     public function load_checkout_page_custom_stylings() {
 
-		if ( $this->is_woo_checkout_shortcode_on_page() ) {
+		if ( $this->is_woo_extended_checkout_shortcode_on_page() ) {
 
-			wp_enqueue_style( 'woo-frontend-checkout-style', EXTENDED_WOOCOMMERCE_URI . 'assets/css/checkout-styles.css', array(), EXTENDED_WOOCOMMERCE_VER );
+			wp_enqueue_style( 'woo-frontend-checkout-styles', EXTENDED_WOOCOMMERCE_URI . 'assets/css/checkout-styles.css', array(), EXTENDED_WOOCOMMERCE_VER );
 		}
 	}
 
@@ -78,11 +125,11 @@ class Extended_Checkout_Config {
 	* @since 1.0.0
 	* @return bool
 	*/
-    public function is_woo_checkout_shortcode_on_page() {
+    public function is_woo_extended_checkout_shortcode_on_page() {
    
         global $post;
     
-        if ( ! empty( $post ) && has_shortcode( $post->post_content, 'woocommerce_checkout' ) ) {
+        if ( ! empty( $post ) && has_shortcode( $post->post_content, 'woo_extended_checkout' ) ) {
     
             return true;
         }
@@ -93,7 +140,7 @@ class Extended_Checkout_Config {
     /**
 	 * Get unique id.
 	 *
-	 * @param int $length    Length.
+	 * @param int $length Length.
 	 *
 	 * @return string
 	 */
@@ -102,8 +149,26 @@ class Extended_Checkout_Config {
 		return substr( md5( microtime() ), 0, $length );
 	}
 
+	/**
+	 * Get product ID linked to current checkout page.
+	 *
+	 * @param int $checkout_id current checkout page.
+	 *
+	 * @return string
+	 */
+    public function get_linked_woo_product_for_checkout( $checkout_id = 0 ) {
+
+		$options_data = get_option( 'woo_extended_checkout_linking', array() );
+
+		if( ! empty( $options_data ) && isset( $options_data[$checkout_id] ) ) {
+			return $options_data[$checkout_id];
+		}
+
+		return $checkout_id;
+	}
+
     /**
-	 * Get selected checkout products and data
+	 * Get selected checkout products and data. 
 	 *
 	 * @param int   $checkout_id    Checkout id.
 	 *
@@ -111,17 +176,16 @@ class Extended_Checkout_Config {
 	 */
 	public function get_selected_checkout_products( $checkout_id = '' ) {
 
+		global $post;
+
 		if ( empty( $checkout_id ) ) {
-
-			global $post;
-
 			$checkout_id = $post->ID;
 		}
 
 		if ( ! isset( $this->checkout_products[ $checkout_id ] ) ) {
 
             $products = array(
-                'product'        => '847',
+                'product'        => $this->get_linked_woo_product_for_checkout( $checkout_id ),
                 'quantity'       => '1',
                 'discount_type'  => '',
                 'discount_value' => '',
@@ -133,7 +197,7 @@ class Extended_Checkout_Config {
 		}
 
 		return $this->checkout_products[ $checkout_id ];
-    }
+	}
     
     /**
 	 * Set selected checkout products and data
@@ -188,7 +252,7 @@ class Extended_Checkout_Config {
 
 		global $post;
 
-		if ( $this->is_woo_checkout_shortcode_on_page() ) {
+		if ( $this->is_woo_extended_checkout_shortcode_on_page() ) {
 
 			if ( wp_doing_ajax() ) {
 				return;
@@ -216,8 +280,8 @@ class Extended_Checkout_Config {
 				$cart_key           = '';
 				$products_new       = array();
 
-                $data = apply_filters( 'extended_woo_selected_checkout_products', $products, $checkout_id );
-				
+				$data = apply_filters( 'extended_woo_selected_checkout_products', $products, $checkout_id );
+
 				if( ! empty( $data ) ) {
 
                     $quantity = $data['quantity'];

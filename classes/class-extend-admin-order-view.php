@@ -32,6 +32,16 @@ class Extend_Admin_Order_View {
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_scripts' ) );
 
         /**
+         * Whitelabel 'WooCommerce' label from admin backend.
+         */
+        add_filter( 'woocommerce_navigation_get_breadcrumbs', array( $this, 'whitelabel_woo_admin_breadcrumb' ), 10, 2 );
+
+        /**
+         * Change WooCommerce menu labels from admin.
+         */
+        add_action( 'admin_menu', array( $this, 'change_woocommerce_menu_label' ) );
+
+        /**
          * Manage Order CPT post columns.
          */
         add_filter( 'manage_shop_order_posts_columns', array( $this, 'setup_shop_order_admin_column_list' ), 11 );
@@ -64,6 +74,33 @@ class Extend_Admin_Order_View {
          */
         add_action( 'wp_ajax_woo_order_feedback', array( $this, 'record_woo_order_feedback' ) );
         add_action( 'wp_ajax_nopriv_woo_order_feedback', array( $this, 'record_woo_order_feedback' ) );
+    }
+
+    /**
+     * Update menu 'WooCommerce' label.
+     */
+    public function change_woocommerce_menu_label() {
+
+		global $menu;
+
+        if( isset( $menu['55.5'] ) ) {
+            $menu['55.5'][0] = __( 'Marketplace' );
+            $menu['55.5'][3] = __( 'Marketplace' );
+        }
+    }
+
+    /**
+     * Update admin 'WooCommerce' label from admin pages breadcrumb.
+     *
+     * Change following text WRT needs.
+     */
+    public function whitelabel_woo_admin_breadcrumb( $breadcrumbs, $current_page ) {
+
+        if( isset( $breadcrumbs[0][1] ) ) {
+            $breadcrumbs[0][1] = __( 'MSME_Management' );
+        }
+
+        return $breadcrumbs;
     }
 
     /**

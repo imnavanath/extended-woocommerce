@@ -154,18 +154,20 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
                 }
             }
 
+            if( ! isset( $_POST['notify_customer_with_certificate'] ) || null === $_POST['notify_customer_with_certificate'] ) {
+                update_post_meta( $post_id, 'notify_customer_with_certificate', 'no' );
+            }
+
             // Handle button actions.
             if ( isset( $_POST['notify_customer_with_certificate'] ) && 'yes' === $_POST['notify_customer_with_certificate'] ) {
 
                 // Send this order certificate to customer.
                 WC()->mailer()->emails['WC_Email_Order_Certificate']->trigger( $order->get_id(), $order );
+                update_post_meta( $post_id, 'notify_customer_with_certificate', 'yes' );
 
                 // Record certifiacte delivering status.
-                $order_note = __( 'Certificate sent successfully.' );
                 $order      = wc_get_order( $post_id );
-                $comment_id = $order->add_order_note( $order_note, 0, true );
-
-                update_post_meta( $post_id, 'notify_customer_with_certificate', 'yes' );
+                $order->update_status( 'completed', __( 'Certificate sent successfully & ' ), true );
             }
         }
 	}

@@ -37,6 +37,17 @@ class Extend_Admin_Order_View {
         add_filter( 'woocommerce_navigation_get_breadcrumbs', array( $this, 'whitelabel_woo_admin_breadcrumb' ), 10, 2 );
 
         /**
+         * Update 'wc_actions' column with custom actions.
+         */
+        add_filter( 'woocommerce_admin_order_actions', array( $this, 'update_woocommerce_admin_order_actions' ), 10, 2 );
+
+        /**
+         * Manage new custom filters.
+         */
+        add_action( 'restrict_manage_posts', array( $this, 'restrict_manage_posts' ) );
+        add_filter( 'parse_query', array( $this, 'sort_custom_filtering' ) );
+
+        /**
          * Change WooCommerce menu labels from admin.
          */
         add_action( 'admin_menu', array( $this, 'change_woocommerce_menu_label' ) );
@@ -90,9 +101,130 @@ class Extend_Admin_Order_View {
     }
 
     /**
+	 * See if we should render search filters or not.
+	 */
+	public function restrict_manage_posts() {
+		global $typenow;
+
+		if ( in_array( $typenow, wc_get_order_types( 'order-meta-boxes' ), true ) ) {
+			$this->render_filters();
+		}
+    }
+
+    /**
+	 * Render any custom filters and search inputs for the list table.
+	 */
+	protected function render_filters() {
+
+        // Order status filter.
+        $order_status = array(
+            'yes' => 'Done',
+            'no' => 'In Progress',
+        );
+
+        $current_order_status = '';
+
+        if( isset( $_GET['order_slug'] ) ) {
+            $current_order_status = $_GET['order_slug'];
+        }
+
+        ?>
+
+        <select name="order_slug" id="order_slug">
+            <option value="all" <?php selected ( 'all', $current_order_status ) ?>> <?php _e( 'All Order Statuses' ) ?> </option>
+            <?php
+                foreach( $order_status as $key => $value ) {
+                    ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $current_order_status ); ?>> <?php echo esc_attr( $value ); ?> </option>
+                    <?php
+                }
+            ?>
+        </select>
+
+        <?php
+
+        // Order ratings filter.
+        $order_feedbacks = array(
+            'positive' => 'Good',
+            'negative' => 'Bad',
+            'asked'    => 'Asked Rating',
+        );
+
+        $current_order_feedback = '';
+
+        if( isset( $_GET['order_feedback'] ) ) {
+            $current_order_feedback = $_GET['order_feedback'];
+        }
+
+		?>
+
+        <select name="order_feedback" id="order_feedback">
+            <option value="all" <?php selected ( 'all', $current_order_feedback ) ?>> <?php _e( 'All Order Ratings' ) ?> </option>
+            <?php
+                foreach( $order_feedbacks as $key => $value ) {
+                    ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php selected( $key, $current_order_feedback ); ?>> <?php echo esc_attr( $value ); ?> </option>
+                    <?php
+                }
+            ?>
+        </select>
+
+		<?php
+    }
+
+    /**
+	 * See if we should render search filters or not.
+	 */
+	public function sort_custom_filtering( $query ) {
+        global $typenow;
+        global $pagenow;
+
+        if ( in_array( $typenow, wc_get_order_types( 'order-meta-boxes' ), true ) && is_admin() && 'edit.php' === $pagenow ) {
+
+            // Order statua filter.
+            if ( isset( $_GET['order_slug'] ) && 'all' !== $_GET['order_slug'] ) {
+                $query->query_vars['meta_key'] = 'notify_customer_with_certificate';
+                $query->query_vars['meta_value'] = $_GET['order_slug'];
+                $query->query_vars['meta_compare'] = '=';
+            }
+
+            // Order ratings filter.
+            if ( isset( $_GET['order_feedback'] ) && 'all' !== $_GET['order_feedback'] ) {
+                $query->query_vars['meta_key'] = 'order_feedback';
+                $query->query_vars['meta_value'] = $_GET['order_feedback'];
+                $query->query_vars['meta_compare'] = '=';
+            }
+        }
+    }
+
+    /**
+     * Update 'wc_actions' from Orders admin pages.
+     *
+     * @since 1.0.0
+     */
+    public function update_woocommerce_admin_order_actions( $actions, $order_object ) {
+
+        unset( $actions['processing'] );
+
+		if ( $order_object->get_status() !== 'trash' ) {
+            echo '<a href="#" class="order-preview extended-preview-order" data-order-id="' . absint( $order_object->get_id() ) . '" title="' . esc_attr( __( 'Preview' ) ) . '">' . esc_html( __( 'Preview' ) ) . '</a>';
+
+            $actions['edit'] = array(
+				'url'    => admin_url( 'post.php?post=' . $order_object->get_id() .'&action=edit' ),
+				'name'   => __( 'Edit' ),
+				'action' => 'edit',
+            );
+        }
+
+        return $actions;
+    }
+
+    /**
      * Update admin 'WooCommerce' label from admin pages breadcrumb.
      *
      * Change following text WRT needs.
+     * 
+     *  @since 1.0.0
      */
     public function whitelabel_woo_admin_breadcrumb( $breadcrumbs, $current_page ) {
 
@@ -112,7 +244,7 @@ class Extend_Admin_Order_View {
 
         $screen    = get_current_screen();
         $screen_id = $screen ? $screen->id : '';
-        
+
         if( 'edit-shop_order' === $screen_id || 'shop_order' === $screen_id ) {
             wp_enqueue_style( 'extended_woocommerce_order_cpt_page' );
         }
@@ -152,7 +284,7 @@ class Extend_Admin_Order_View {
             'order_status'      =>      __( 'Payment / Order Status' ),
             'ratings_status'    =>      __( 'Ratings / Follow Up Date' ),
             'assign_pay_status' =>      __( 'Assignee' ),
-            'wc_actions'        =>      __('Actions'),
+            'wc_actions'        =>      __( 'Actions' ),
         ) );
     }
 
@@ -379,7 +511,7 @@ class Extend_Admin_Order_View {
                                     $output = '<br /> <p> <b> Following variables can be used for dynamic content - Paste it in anywhere in the content (including {} backets). </b>';
                                     $output .= '<ol> <li> <b> {order_number} </b> - Customer\'s unique order number </li>';
                                     $output .= '<li> <b> {site_title} </b> - This site title (your site name) </li>';
-                                    $output .= '<li> <b> {certificate_url} </b> - Certificate downlodable URL link (apply it to any text/button from the editor) </li>';
+                                    $output .= '<li> <b> {certificate_url} </b> - Certificate downlodable URL link (apply it to any text/button from the editor). <br/> While adding this link to new custom label (except default "Download Certificate" label), make sure it has "download" attribute assigned to anchor link. </li>';
                                     $output .= '<li> <b> {site_url} </b> - This site URL </li> </ol>';
 
                                     echo $output;

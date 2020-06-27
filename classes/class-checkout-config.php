@@ -42,6 +42,9 @@ class Extended_Checkout_Config {
 		 */
 		add_shortcode( 'woo_extended_checkout', array( $this, 'woo_extended_checkout_shortcode_markup' ) );
 
+		// Chnage "'Ship to a different address'" text from Checkout page.
+		add_filter( 'gettext', array( $this, 'shipping_address_strings_translation' ), 20, 3 );
+
         // Preconfigured cart data.
 		add_action( 'wp', array( $this, 'preconfigured_extended_cart_data' ), 1 );
 
@@ -95,17 +98,34 @@ class Extended_Checkout_Config {
 	}
 
 	/**
+	* Chnage 'Ship to a different address' text to new text.
+	*
+	* @since 1.0.0
+	* @param string $translated_text Translated Text.
+	* @param string $text Text.
+	* @param string $domain Domain name.
+	*
+	* @return string
+	*/
+	public function shipping_address_strings_translation( $translated_text, $text, $domain ) {
+
+		switch ( $translated_text ) {
+			case 'Ship to a different address?' :
+				$translated_text =  __( 'Office Address / आधिकारिक पता Same As Plant Address' );
+				break;
+		}
+
+		return $translated_text;
+	}
+
+	/**
 	* Load custom styles for checkout page.
 	*
 	* @since 1.0.0
 	* @return bool
 	*/
     public function load_checkout_page_custom_stylings() {
-
-		if ( $this->is_woo_extended_checkout_shortcode_on_page() ) {
-
-			wp_enqueue_style( 'woo-frontend-checkout-styles', EXTENDED_WOOCOMMERCE_URI . 'assets/css/checkout-styles.css', array(), EXTENDED_WOOCOMMERCE_VER );
-		}
+		wp_enqueue_style( 'woo-frontend-checkout-styles', EXTENDED_WOOCOMMERCE_URI . 'assets/css/checkout-styles.css', array(), EXTENDED_WOOCOMMERCE_VER );
 	}
 
 	/**

@@ -15,6 +15,27 @@
 }
 
 /**
+ * Style last Custom wp_actions.
+ */
+.column-wc_actions a.order-preview.extended-preview-order {
+    border: 1px solid #7e8993;
+    border-radius: 3px;
+    margin: 2px 0 2px 4px;
+    line-height: 2.15384615;
+    min-height: 4px;
+}
+.column-wc_actions a.order-preview.extended-preview-order:hover,
+.column-wc_actions a.order-preview.extended-preview-order:focus {
+    border-width: 1px;
+}
+.column-wc_actions a.order-preview.extended-preview-order:before{
+    margin-top: 2px;
+}
+.column-order_number a.order-preview {
+    display: none;
+}
+
+/**
  * Highlight order status badgees.
  */
  .order-status.certificate-delivered,

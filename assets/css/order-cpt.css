@@ -1,17 +1,15 @@
 /**
  * Adjust column widths.
  */
-.post-type-shop_order .wp-list-table .column-order_number {
-    width: 12ch;
-}
-.post-type-shop_order .wp-list-table .column-order_status {
-    width: 16ch !important;
-}
-.post-type-shop_order .wp-list-table .column-order_date {
-    width: 8ch;
-}
-.post-type-shop_order .wp-list-table .column-social_details {
+.post-type-shop_order .wp-list-table #order_number.column-order_number {
     width: 15ch;
+}
+.post-type-shop_order .wp-list-table #order_status.column-order_status {
+    width: 16ch;
+}
+.post-type-shop_order .wp-list-table #order_date.column-order_date,
+.post-type-shop_order .wp-list-table #social_details.column-social_details {
+    width: 17ch;
 }
 
 /**
@@ -60,10 +58,22 @@
 /**
  * Highlight Assignee name.
  */
-.assign_pay_status .order-assignee-name {
+.assign_pay_status .order-assignee-name,
+.column-order_date .order_is_for_name {
     font-weight: 600;
     color: blue;
     text-transform: capitalize;
+}
+
+/**
+ * Filter reset button
+ */
+.post-type-shop_order table.wp-list-table tbody td,
+.post-type-shop_order table.wp-list-table tbody th {
+    padding: 1.5em;
+}
+a.reset_filtering.button {
+    min-height: 32px
 }
 
 /**

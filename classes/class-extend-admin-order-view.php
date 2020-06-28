@@ -44,7 +44,7 @@ class Extend_Admin_Order_View {
         /**
          * Manage new custom filters.
          */
-        add_action( 'restrict_manage_posts', array( $this, 'restrict_manage_posts' ) );
+        add_action( 'restrict_manage_posts', array( $this, 'restrict_manage_posts' ), 12 );
         add_filter( 'parse_query', array( $this, 'sort_custom_filtering' ) );
 
         /**
@@ -169,6 +169,8 @@ class Extend_Admin_Order_View {
             ?>
         </select>
 
+        <a href="<?php echo esc_url( admin_url() . 'edit.php?post_type=shop_order' ); ?>" class="button reset_filtering"> <?php _e( 'Reset' ); ?> </a>
+
 		<?php
     }
 
@@ -279,7 +281,7 @@ class Extend_Admin_Order_View {
         }
 
         return array_merge ( $columns, array (
-            'order_date'        =>      __( 'Order initiated at' ),
+            'order_date'        =>      __( 'Order - Initiated at / Is for' ),
             'social_details'    =>      __( 'Mobile / Email ID' ),
             'order_status'      =>      __( 'Payment / Order Status' ),
             'ratings_status'    =>      __( 'Ratings / Follow Up Date' ),
@@ -297,6 +299,25 @@ class Extend_Admin_Order_View {
     public function render_shop_order_custom_columns( $column, $post_id ) {
 
         switch ( $column ) {
+
+            // order_date append column.
+            case 'order_date':
+                $output = '';
+                $order = wc_get_order( $post_id );
+                $line_items = $order->get_items();
+
+                if( $line_items ) {
+
+                    $output .= ' / <br/>';
+
+                    foreach ( $line_items as $item_id => $item ) {
+                        $output .= '<span class="order_is_for_name"> ' . wp_kses_post( $item->get_name() ) . '.</span>';
+                    }
+                }
+
+                echo $output;
+            break;
+
             // social_details custom column.
             case 'social_details':
                 $output = '';

@@ -42,6 +42,9 @@ class Extended_Checkout_Config {
 		 */
 		add_shortcode( 'woo_extended_checkout', array( $this, 'woo_extended_checkout_shortcode_markup' ) );
 
+		// Hide / Show "Ship to Different Address?" fields.
+		add_filter( 'woocommerce_cart_needs_shipping_address', array( $this, 'change_shipping_detail_requirement' ) );
+
 		// Chnage "'Ship to a different address'" text from Checkout page.
 		add_filter( 'gettext', array( $this, 'shipping_address_strings_translation' ), 20, 3 );
 
@@ -95,6 +98,22 @@ class Extended_Checkout_Config {
 		$output .= ob_get_clean();
 
 		return $output;
+	}
+
+	/**
+	* Chnage 'Ship to a different address' text to new text.
+	* Updated page ID where shipping fields need to load.
+	*
+	* @since 1.0.0
+	* @return bool true | false.
+	*/
+	public function change_shipping_detail_requirement() {
+
+		if( is_page( 18 ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

@@ -603,7 +603,7 @@ class Extend_Admin_Order_View {
             'extended_woo_order_vars',
             array(
                 'extended_woo_order_nonce' 	=> 		wp_create_nonce( 'extended_woo_order_nonce' ),
-                'thank_you_text' 			=> 		apply_filters( 'extended_woo_thank_you_feedback_text', 'Thank you for our valuable feedback!' ),
+                'thank_you_text' 			=> 		apply_filters( 'extended_woo_thank_you_feedback_text', 'Thank you for your valuable feedback!' ),
                 'ajaxurl' 					=> 		admin_url( 'admin-ajax.php' ),
             )
         );

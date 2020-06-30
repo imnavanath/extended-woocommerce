@@ -36,7 +36,7 @@
     background-color: #fff;
 }
 
-.extended-woo-form form #order_review {
+.extended-woo-form .woocommerce form div#order_review {
     padding: 0;
     border: 0;
 }

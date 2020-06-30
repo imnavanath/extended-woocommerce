@@ -57,6 +57,10 @@
     color: #fff;
 }
 
+.woocommerce td.woocommerce-table__product-name.product-name a {
+    pointer-events: none;
+}
+
 @media (min-width: 922px) {
     .extended-woo-form .elementor-widget-shortcode form #order_review,
     .extended-woo-form .elementor-widget-shortcode form #customer_details.col2-set,

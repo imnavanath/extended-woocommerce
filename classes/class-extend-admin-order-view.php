@@ -514,7 +514,9 @@ class Extend_Admin_Order_View {
 
                                     Here is your certificate for your order #{order_number}. Click the button below and get your certificate!
 
-                                    <a href="{certificate_url}" target="_blank" download> Download Certificate </a>';
+                                    <a href="{certificate_url}" target="_blank" download> Download Certificate </a>
+
+                                    <a href="{certificate_url_2}" target="_blank" download> Download Certificate </a>';
 
                                     wp_editor(
                                         $initial_data,
@@ -533,6 +535,7 @@ class Extend_Admin_Order_View {
                                     $output .= '<ol> <li> <b> {order_number} </b> - Customer\'s unique order number </li>';
                                     $output .= '<li> <b> {site_title} </b> - This site title (your site name) </li>';
                                     $output .= '<li> <b> {certificate_url} </b> - Certificate downlodable URL link (apply it to any text/button from the editor). <br/> While adding this link to new custom label (except default "Download Certificate" label), make sure it has "download" attribute assigned to anchor link. </li>';
+                                    $output .= '<li> <b> {certificate_url_2} </b> - 2nd Certificate downlodable URL link (apply it to any text/button from the editor). <br/> While adding this link to new custom label (except default "Download Certificate" label), make sure it has "download" attribute assigned to anchor link. </li>';
                                     $output .= '<li> <b> {site_url} </b> - This site URL </li> </ol>';
 
                                     echo $output;

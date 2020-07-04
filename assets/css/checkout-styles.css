@@ -68,3 +68,9 @@
         width: 100%;
     }
 }
+
+@media(max-width: 544px) {
+    .woocommerce form .form-row-first, .woocommerce form .form-row-last, .woocommerce-page form .form-row-first, .woocommerce-page form .form-row-last {
+        width: 100%;
+    }
+}

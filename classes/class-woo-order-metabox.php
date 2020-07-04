@@ -88,7 +88,11 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
             $saved_file = get_post_meta( $post->ID, 'certificate_file_name', true );
             $certificate_file_url = get_post_meta( $post->ID, 'certificate_file_url', true );
 
+            $saved_file_2 = get_post_meta( $post->ID, 'certificate_file_name_2', true );
+            $certificate_file_url_2 = get_post_meta( $post->ID, 'certificate_file_url_2', true );
+
             $output_notice = isset( $saved_file ) && '' !== $saved_file ? $saved_file : __( 'Please upload valid PDF file here.' );
+            $output_notice_2 = isset( $saved_file_2 ) && '' !== $saved_file_2 ? $saved_file_2 : __( 'Please upload valid PDF file here.' );
 
             ?>
                 <fieldset>
@@ -98,9 +102,13 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
 
                         <input type="url" readonly class="large-text" name="certificate_file_name" id="certificate_file_name" value="<?php echo esc_attr( $output_notice ); ?>"><br><br>
                         <input type="hidden" name="certificate_file_url" id="certificate_file_url" value="<?php echo esc_attr( $certificate_file_url ); ?>">
+
+                        <input type="url" readonly class="large-text" name="certificate_file_name_2" id="certificate_file_name_2" value="<?php echo esc_attr( $output_notice_2 ); ?>"><br><br>
+                        <input type="hidden" name="certificate_file_url_2" id="certificate_file_url_2" value="<?php echo esc_attr( $certificate_file_url_2 ); ?>">
+
                         <input type="hidden" name="order_id" id="order_id" value="<?php echo esc_attr( $post->ID ); ?>">
 
-                        <button type="button" class="button" id="certificate_upload_btn" style="vertical-align: middle;" data-certificate_name="#certificate_file_name" data-certificate_url="#certificate_file_url"><?php _e( 'Upload Certificate' )?></button>
+                        <button type="button" class="button" id="certificate_upload_btn" style="vertical-align: middle;" data-certificate_name="#certificate_file_name" data-certificate_url="#certificate_file_url" data-certificate_name_2="#certificate_file_name_2" data-certificate_url_2="#certificate_file_url_2"><?php _e( 'Upload Certificates' )?></button>
 
                         <?php
                             $is_notified = get_post_meta( $post->ID, 'notify_customer_with_certificate', true );
@@ -111,7 +119,6 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
                             <input type="checkbox" name="notify_customer_with_certificate" id="notify_customer_with_certificate" value="yes" <?php echo esc_attr( $is_notified_checked ); ?> />
                             <?php _e( 'Notify user?', 'prfx-textdomain' )?>
                         </label>
-
                     </div>
                 </fieldset>
             <?php
@@ -144,7 +151,20 @@ if ( ! class_exists( 'Woo_Order_Metabox' ) ) {
                 // Certificate file URL.
                 $certificate_file_url = sanitize_text_field( $_POST['certificate_file_url'] );
                 update_post_meta( $post_id, 'certificate_file_url', $certificate_file_url );
+            }
 
+            if( isset( $_POST['certificate_file_name_2'] ) && isset( $_POST['certificate_file_url_2'] ) ) {
+
+                // Certificate file ID 2.
+                $certificate_file_name_2 = sanitize_text_field( $_POST['certificate_file_name_2'] );
+                update_post_meta( $post_id, 'certificate_file_name_2', $certificate_file_name_2 );
+
+                // Certificate file URL 2.
+                $certificate_file_url_2 = sanitize_text_field( $_POST['certificate_file_url_2'] );
+                update_post_meta( $post_id, 'certificate_file_url_2', $certificate_file_url_2 );
+            }
+
+            if( ( isset( $_POST['certificate_file_name'] ) && isset( $_POST['certificate_file_url'] ) ) || ( isset( $_POST['certificate_file_name_2'] ) && isset( $_POST['certificate_file_url_2'] ) ) ) {
                 // Record order note.
                 $order_note = __( 'Certificate uploaded successfully.' );
                 $order      = wc_get_order( $post_id );

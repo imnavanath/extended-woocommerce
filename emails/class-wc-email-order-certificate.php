@@ -82,8 +82,10 @@ if ( ! class_exists( 'WC_Email_Order_Certificate', false ) ) :
 			$mail_body = 'Thank you for shopping with us!
                                     
 			Here is your certificate for your order #{order_number}. Click the button below and get your certificate!
-			
-			<a href="{certificate_url}" target="_blank" download> Download Certificate </a>';
+
+			<a href="{certificate_url}" target="_blank" download> Download Certificate </a>
+
+			<a href="{certificate_url_2}" target="_blank" download> Download Certificate </a>';
 
             return $mail_body;
 		}
@@ -141,6 +143,16 @@ if ( ! class_exists( 'WC_Email_Order_Certificate', false ) ) :
 		}
 
 		/**
+		 * Get order-recieved page.
+		 *
+		 * @return string
+		 */
+		public function get_order_certificate_url_2( $order_id ) {
+			$certificate_file_url_2 = get_post_meta( $order_id, 'certificate_file_url_2', true );
+			return $certificate_file_url_2;
+		}
+
+		/**
 		 * Default content to show below main email content.
 		 *
 		 * @since 3.7.0
@@ -192,6 +204,7 @@ if ( ! class_exists( 'WC_Email_Order_Certificate', false ) ) :
 					'additional_content' 		=> $this->get_additional_content(),
 					'email_body'		 		=> $this->get_mail_body(),
 					'get_order_certificate_url' => $this->get_order_certificate_url( $this->object->get_order_number() ),
+					'get_order_certificate_url_2' => $this->get_order_certificate_url_2( $this->object->get_order_number() ),
 					'sent_to_admin'      		=> false,
 					'plain_text'         		=> false,
 					'email'              		=> $this,
@@ -213,6 +226,7 @@ if ( ! class_exists( 'WC_Email_Order_Certificate', false ) ) :
 					'additional_content' 		=> $this->get_additional_content(),
 					'email_body'		 		=> $this->get_mail_body(),
 					'get_order_certificate_url' => $this->get_order_certificate_url( $this->object->get_order_number() ),
+					'get_order_certificate_url_2' => $this->get_order_certificate_url_2( $this->object->get_order_number() ),
 					'sent_to_admin'      		=> false,
 					'plain_text'         		=> true,
 					'email'              		=> $this,

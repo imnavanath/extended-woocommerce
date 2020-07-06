@@ -465,25 +465,6 @@ class Extend_Admin_Order_View {
                             </th>
                             <td>
                                 <?php
-                                    $initial_data = 'Thank you for shopping with us!
-                                    
-                                    We would love if you could help us and other customers by reviewing products that you recently purchased in order #{order_number}. It only takes a minute and it would really help others. Click the button below and leave your review!
-                                    
-                                    <a href="{rating_url}" target="_blank"> Review </a>';
-
-                                    wp_editor(
-                                        $initial_data,
-                                        'woocommerce_order_rating_body',
-                                        array(
-                                            'media_buttons' => true,
-                                            'textarea_rows' => 15,
-                                            'tabindex' => 4,
-                                            'tinymce'  => array(
-                                                'theme_advanced_buttons1' => 'bold,italic,underline,|,bullist,numlist,blockquote,|,link,unlink,|,spellchecker,fullscreen,|,formatselect,styleselect',
-                                            ),
-                                        )
-                                    );
-
                                     $output = '<br /> <p> <b> Following variables can be used for dynamic content - Paste it in anywhere in the content (including {} backets). </b>';
                                     $output .= '<ol> <li> <b> {order_number} </b> - Customer\'s unique order number </li>';
                                     $output .= '<li> <b> {site_title} </b> - This site title (your site name) </li>';
@@ -510,27 +491,6 @@ class Extend_Admin_Order_View {
                             </th>
                             <td>
                                 <?php
-                                    $initial_data = 'Thank you for shopping with us!
-
-                                    Here is your certificate for your order #{order_number}. Click the button below and get your certificate!
-
-                                    <a href="{certificate_url}" target="_blank" download> Download Certificate </a>
-
-                                    <a href="{certificate_url_2}" target="_blank" download> Download Certificate </a>';
-
-                                    wp_editor(
-                                        $initial_data,
-                                        'woocommerce_order_certificate_body',
-                                        array(
-                                            'media_buttons' => true,
-                                            'textarea_rows' => 15,
-                                            'tabindex' => 4,
-                                            'tinymce'  => array(
-                                                'theme_advanced_buttons1' => 'bold,italic,underline,|,bullist,numlist,blockquote,|,link,unlink,|,spellchecker,fullscreen,|,formatselect,styleselect',
-                                            ),
-                                        )
-                                    );
-
                                     $output = '<br /> <p> <b> Following variables can be used for dynamic content - Paste it in anywhere in the content (including {} backets). </b>';
                                     $output .= '<ol> <li> <b> {order_number} </b> - Customer\'s unique order number </li>';
                                     $output .= '<li> <b> {site_title} </b> - This site title (your site name) </li>';

@@ -77,7 +77,7 @@ if ( ! class_exists( 'WC_Email_Order_Ratings', false ) ) :
 		 * @since  1.0.0
 		 * @return string
 		 */
-		public function get_default_body( $paid = false ) {
+		public function get_default_mail_body( $paid = false ) {
 
 			$mail_body = 'Thank you for shopping with us!
                                     
@@ -126,7 +126,7 @@ if ( ! class_exists( 'WC_Email_Order_Ratings', false ) ) :
 		 * @return string
 		 */
 		public function get_mail_body() {
-			$body = $this->get_option( 'body', $this->get_default_body() );
+			$body = $this->get_option( 'email_body', $this->get_default_mail_body() );
 			return apply_filters( 'woocommerce_email_body_order_rating', $this->format_string( $body ), $this->object, $this );
 		}
 
@@ -265,6 +265,15 @@ if ( ! class_exists( 'WC_Email_Order_Ratings', false ) ) :
 					'placeholder' => __( 'N/A' ),
 					'type'        => 'textarea',
 					'default'     => $this->get_default_additional_content(),
+					'desc_tip'    => true,
+				),
+				'email_body' => array(
+					'title'       => __( 'Email Body' ),
+					'description' => __( 'Main Email body.' ),
+					'css'         => 'width:600px; height: 200px;',
+					'placeholder' => __( 'N/A' ),
+					'type'        => 'textarea',
+					'default'     => $this->get_default_mail_body(),
 					'desc_tip'    => true,
 				),
 				'email_type'         => array(

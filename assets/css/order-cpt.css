@@ -17,6 +17,13 @@
 }
 
 /**
+ * Hide "Billing Details" from order preview.
+ */
+article .wc-order-preview-addresses:nth-child(2) .wc-order-preview-address {
+    display: none;
+}
+
+/**
  * Style last Custom wp_actions.
  */
 .column-wc_actions a.order-preview.extended-preview-order {

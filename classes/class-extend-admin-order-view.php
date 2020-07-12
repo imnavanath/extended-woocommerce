@@ -70,6 +70,16 @@ class Extend_Admin_Order_View {
         add_action( 'woocommerce_order_action_rating_from_customer', array( $this, 'perform_rating_functionality' ) );
 
         /**
+         * Set custom billing details to render it further in preview popup.
+         */
+        add_filter( 'woocommerce_admin_order_preview_get_order_details', array( $this, 'admin_order_preview_add_custom_meta_data' ), 10, 2 );
+
+        /**
+         * Register new operations & respective their actions in Order actions.
+         */
+        add_action( 'woocommerce_admin_order_preview_start', array( $this, 'showcase_all_billing_fields_on_order_preview' ) );
+
+        /**
          * Add HTML editor field to email template.
          */
         add_action( 'woocommerce_email_settings_after', array( $this, 'add_html_editor_custom_field' ) );
@@ -101,7 +111,72 @@ class Extend_Admin_Order_View {
     }
 
     /**
+	 * Checking if postmeta have started with '_billing' word or not.
+	 */
+	public function check_starts_with_string( $string, $startString ) {
+        $len = strlen( $startString );
+        return ( substr( $string, 0, $len ) === $startString );
+    }
+
+    /**
+	 * Let's prepare all collective data prop.
+	 */
+    public function admin_order_preview_add_custom_meta_data( $data, $order ) {
+
+        $data['custom_props'] = $this->render_all_order_billing_fields( $order );
+
+        return $data;
+    }
+
+    /**
+	 * Collect all billing order meta into an HTML.
+     *
+     * @since 1.0.0
+	 */
+	public function render_all_order_billing_fields( $order ) {
+
+        $html = '';
+        $order_id = $order->get_id();
+
+        $post_meta = get_post_meta( $order_id );
+
+        $wooccm_billing_fields_option = get_option( 'wooccm_billing' );
+
+        foreach( $post_meta as $key => $value ) {
+
+            if( isset( $value[0] ) && '' !== $value[0] && '_billing_address_index' !== $key ) {
+                if( $this->check_starts_with_string( $key, '_billing' ) ) {
+                    $field_name = ltrim( $key, '_' );
+                    $array_place_key = array_search( $field_name, array_column( $wooccm_billing_fields_option, 'key' ) );
+                    if( isset( $wooccm_billing_fields_option[$array_place_key]['label'] ) ) {
+                        $html .= '<p><strong>' . esc_html( $wooccm_billing_fields_option[$array_place_key]['label'] ) . ':</strong> ' . wp_kses_post( $value[0] ) . '</p>';
+                    }
+                }
+            }
+        }
+
+        return $html;
+    }
+
+    /**
+	 * Showcase all billing fields on preview order popup.
+     *
+     * @since 1.0.0
+	 */
+	public function showcase_all_billing_fields_on_order_preview() {
+        ?>
+            <div class="wc-order-preview-addresses">
+            <div class="wc-order-preview-address">
+            <h2> Order Details </h2>
+                <?php echo '{{{data.custom_props}}}'; ?>
+            </div></div>
+        <?php
+    }
+
+    /**
 	 * See if we should render search filters or not.
+     *
+     * @since 1.0.0
 	 */
 	public function restrict_manage_posts() {
 		global $typenow;

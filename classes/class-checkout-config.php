@@ -144,7 +144,14 @@ class Extended_Checkout_Config {
 	* @return bool
 	*/
     public function load_checkout_page_custom_stylings() {
+
+		// Global checkout form stylings.
 		wp_enqueue_style( 'woo-frontend-checkout-styles', EXTENDED_WOOCOMMERCE_URI . 'assets/css/checkout-styles.css', array(), EXTENDED_WOOCOMMERCE_VER );
+
+		// Update IEC form conditional form.
+		if( is_page( 21 ) ) {
+			wp_enqueue_script( 'woo-frontend-checkout-script', EXTENDED_WOOCOMMERCE_URI . 'assets/js/checkout-page.js', array( 'jquery' ), EXTENDED_WOOCOMMERCE_VER, false );
+		}
 	}
 
 	/**
